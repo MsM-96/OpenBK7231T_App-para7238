@@ -154,26 +154,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          # default for all platforms
-          - platform: OpenBK7231T
-            variant: default
-          - platform: OpenBK7231N
-            variant: default
-          # extras for BK7231T
-          - platform: OpenBK7231T
-            variant: berry
-          - platform: OpenBK7231T
-            variant: tuyaMCU
-          - platform: OpenBK7231T
-            variant: powerMetering
-          - platform: OpenBK7231T
-            variant: irRemoteESP
-          - platform: OpenBK7231T
-            variant: sensors
-
-          # extras for BK7231N
-                    
-          
           # ALT firmware
           - platform: OpenBK7238
             variant: default
