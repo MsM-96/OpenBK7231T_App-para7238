@@ -159,14 +159,6 @@ jobs:
             variant: default
           - platform: OpenBK7231N
             variant: default
-           
-            variant: default
-            gcc: 10.3-2021.10
-          #- platform: OpenBL616
-          #  variant: default
-          #- platform: OpenBL602_ALT
-          #  variant: default
-
           # extras for BK7231T
           - platform: OpenBK7231T
             variant: berry
@@ -257,13 +249,7 @@ jobs:
             output/${{ needs.refs.outputs.version }}${{ matrix.variant != 'default' && '_' || '' }}${{ matrix.variant != 'default' && matrix.variant || '' }}/${{ matrix.platform }}_${{ needs.refs.outputs.version }}${{ matrix.variant != 'default' && '_' || '' }}${{ matrix.variant != 'default' && matrix.variant || '' }}_OTA.bin.xz.ota
           if-no-files-found: warn
 
-  build_idf:
-    name: Build IDF
-    needs: refs
-    runs-on: ubuntu-24.04
-    strategy:
-      fail-fast: false
-      matrix:
+
              
     steps:
       - name: Source checkout
