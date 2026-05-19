@@ -558,9 +558,9 @@ const char* htmlPinRoleNames[] = {
 	"StripState",
 	"StripState_n",
 	"HLW_8112_SCSN",
-	"error",
-	"error",
-	"error",
+	"HLW_8112_SCLK",
+	"HLW_8112_SDI",
+	"HLW_8112_SDO",
 };
 
 const char* PIN_RoleToString(int role) {
