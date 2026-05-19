@@ -160,41 +160,7 @@ jobs:
             variant: default
           - platform: OpenBK7231N
             variant: default
-          - platform: OpenXR809
-            variant: default
-            gcc: 8-2019-q3
-          - platform: OpenXR806
-            variant: default
-            gcc: 8-2019-q3
-          - platform: OpenXR872
-            variant: default
-            gcc: 8-2019-q3
-          - platform: OpenBL602
-            variant: default
-          - platform: OpenW800
-            variant: default
-          - platform: OpenW600
-            variant: default
-          - platform: OpenLN882H
-            variant: default
-            gcc: 10.3-2021.10
-          - platform: OpenTR6260
-            variant: default
-          - platform: OpenRTL8710A
-            variant: default
-            gcc: 8-2019-q3
-          - platform: OpenRTL8710B
-            variant: default
-            gcc: 8-2019-q3
-          - platform: OpenRTL87X0C
-            variant: default
-            gcc: apt
-          - platform: OpenRTL8720D
-            variant: default
-            gcc: 10.3-2021.10
-          - platform: OpenECR6600
-            variant: default
-
+         
           # extras for BK7231T
           - platform: OpenBK7231T
             variant: berry
@@ -218,11 +184,7 @@ jobs:
             variant: irRemoteESP
           - platform: OpenBK7231N
             variant: sensors
-            
-          - platform: OpenBL602
-            variant: berry
-          #- platform: OpenBL602
-          #  variant: irRemoteESP
+                    
     steps:
       - name: Source checkout
         uses: actions/checkout@v4
@@ -358,7 +320,55 @@ jobs:
             output/${{ needs.refs.outputs.version }}${{ matrix.variant != 'default' && '_' || '' }}${{ matrix.variant != 'default' && matrix.variant || '' }}/${{ matrix.platform }}_${{ needs.refs.outputs.version }}${{ matrix.variant != 'default' && '_' || '' }}${{ matrix.variant != 'default' && matrix.variant || '' }}.factory.bin
           if-no-files-found: warn
 
-   
+  build_8266:
+    name: Build ESP8266
+    needs: refs
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    container:
+      image: coatldev/six:latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: OpenESP8266
+            variant: default
+    steps:
+      - name: Source checkout
+        uses: actions/checkout@v4
+      - name: SDK checkout
+        uses: actions/checkout@v4
+        with:
+          repository: espressif/ESP8266_RTOS_SDK
+          path: sdk/ESP8266_RTOS_SDK
+          ref: release/v3.4
+          submodules: false
+          fetch-tags: true
+          fetch-depth: '200'
+      - name: Install dependencies
+        run: |
+          git config --global user.name github-actions
+          git config --global user.email github-actions@github.com
+          apt-get update && apt-get -y install cmake
+          pip2 install virtualenv
+          cd sdk/ESP8266_RTOS_SDK
+          git checkout c965e03d2b7418b085c394dc98c6a0d3371c2abd
+          patch -p1 -d . < ../../platforms/ESP8266/sdk.patch
+          git revert 0325f833aac7b34d7627619499949331a98fc3ab --no-edit
+          git submodule update --init components/coap/libcoap
+          cd components/coap/libcoap
+          git fetch
+          git checkout 017528d7d96dca2318ed587b5fd3c0d57a89e49a
+          cd ../../..
+          git add .
+          git commit -m "upd"
+          git submodule update --init --recursive
+          cd ../..
+          python2 -m pip install --user -r sdk/ESP8266_RTOS_SDK/requirements.txt
+          python3 -m pip install esptool
+      - name: Run make
         run: |
           cd sdk/ESP8266_RTOS_SDK
           ./install.sh > /dev/null
