@@ -358,55 +358,7 @@ jobs:
             output/${{ needs.refs.outputs.version }}${{ matrix.variant != 'default' && '_' || '' }}${{ matrix.variant != 'default' && matrix.variant || '' }}/${{ matrix.platform }}_${{ needs.refs.outputs.version }}${{ matrix.variant != 'default' && '_' || '' }}${{ matrix.variant != 'default' && matrix.variant || '' }}.factory.bin
           if-no-files-found: warn
 
-  build_8266:
-    name: Build ESP8266
-    needs: refs
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: bash
-    container:
-      image: coatldev/six:latest
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - platform: OpenESP8266
-            variant: default
-    steps:
-      - name: Source checkout
-        uses: actions/checkout@v4
-      - name: SDK checkout
-        uses: actions/checkout@v4
-        with:
-          repository: espressif/ESP8266_RTOS_SDK
-          path: sdk/ESP8266_RTOS_SDK
-          ref: release/v3.4
-          submodules: false
-          fetch-tags: true
-          fetch-depth: '200'
-      - name: Install dependencies
-        run: |
-          git config --global user.name github-actions
-          git config --global user.email github-actions@github.com
-          apt-get update && apt-get -y install cmake
-          pip2 install virtualenv
-          cd sdk/ESP8266_RTOS_SDK
-          git checkout c965e03d2b7418b085c394dc98c6a0d3371c2abd
-          patch -p1 -d . < ../../platforms/ESP8266/sdk.patch
-          git revert 0325f833aac7b34d7627619499949331a98fc3ab --no-edit
-          git submodule update --init components/coap/libcoap
-          cd components/coap/libcoap
-          git fetch
-          git checkout 017528d7d96dca2318ed587b5fd3c0d57a89e49a
-          cd ../../..
-          git add .
-          git commit -m "upd"
-          git submodule update --init --recursive
-          cd ../..
-          python2 -m pip install --user -r sdk/ESP8266_RTOS_SDK/requirements.txt
-          python3 -m pip install esptool
-      - name: Run make
+   
         run: |
           cd sdk/ESP8266_RTOS_SDK
           ./install.sh > /dev/null
@@ -459,7 +411,7 @@ jobs:
           - platform: OpenBK7238
             variant: irRemoteESP
             gcc: apt
-steps:
+    steps:
       - name: Source checkout
         uses: actions/checkout@v4
       - name: Install arm-none-eabi-gcc
@@ -490,6 +442,19 @@ steps:
             output/${{ needs.refs.outputs.version }}${{ matrix.variant != 'default' && '_' || '' }}${{ matrix.variant != 'default' && matrix.variant || '' }}/${{ matrix.platform }}_Tuya_QIO_${{ needs.refs.outputs.version }}${{ matrix.variant != 'default' && '_' || '' }}${{ matrix.variant != 'default' && matrix.variant || '' }}.bin
             output/${{ needs.refs.outputs.version }}${{ matrix.variant != 'default' && '_' || '' }}${{ matrix.variant != 'default' && matrix.variant || '' }}/${{ matrix.platform }}_Tuya_UA_${{ needs.refs.outputs.version }}${{ matrix.variant != 'default' && '_' || '' }}${{ matrix.variant != 'default' && matrix.variant || '' }}.bin
           if-no-files-found: warn
+
+  build_ameba:
+    name: Build ameba
+    needs: refs
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: OpenRTL8721DA
+            variant: default
+          - platform: OpenRTL8720E
+            variant: default
     steps:
       - name: Source checkout
         uses: actions/checkout@v4
@@ -532,7 +497,20 @@ steps:
             output/${{ needs.refs.outputs.version }}${{ matrix.variant != 'default' && '_' || '' }}${{ matrix.variant != 'default' && matrix.variant || '' }}/${{ matrix.platform }}_${{ needs.refs.outputs.version }}${{ matrix.variant != 'default' && '_' || '' }}${{ matrix.variant != 'default' && matrix.variant || '' }}_ota.img
           if-no-files-found: warn
 
-      steps:
+  build_txw81x:
+    name: Build TXW81X
+    needs: refs
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: wsl-bash {0}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: OpenTXW81X
+            variant: default
+    steps:
       - name: Source checkout
         uses: actions/checkout@v4
       - uses: Vampire/setup-wsl@v6
@@ -594,4 +572,4 @@ steps:
           echo ${{ steps.semantic.outputs.new_release_version }}
           echo ${{ steps.semantic.outputs.new_release_major_version }}
           echo ${{ steps.semantic.outputs.new_release_minor_version }}
-          echo ${{ steps.semantic.outputs.new_release_patc
+          echo ${{ steps.semantic.outputs.new_release_patch_version }}
