@@ -15,7 +15,7 @@
 #define OBK_VARIANT_ESP2M_BERRY					3
 
 // Starts with all driver flags undefined
-#define ENABLE_DRIVER_HLW8112SPI
+
 // NOTE:
 // Defines for HTTP/HTMP (UI) pages: ENABLE_HTTP_*
 // Defines for drivers from drv_main.c: ENABLE_DRIVER_*
