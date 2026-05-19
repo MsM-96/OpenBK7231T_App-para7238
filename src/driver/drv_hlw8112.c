@@ -54,7 +54,7 @@ static HLW8112_UpdateData_t last_update_data = {
 };	// last scaled values for ext systems 
 
 static int stat_save_count_down = HLW8112_SAVE_COUNTER;
-int GPIO_HLW_SCSN = 9;
+int GPIO_HLW_SCSN = 21;
 
 #pragma region HLW8112 utils
 
