@@ -35,7 +35,7 @@
 #define ENABLE_LED_BASIC						1
 
 
-#define ENABLE_DRIVER_HLW8112SPI
+
 
 
 #if PLATFORM_XRADIO
