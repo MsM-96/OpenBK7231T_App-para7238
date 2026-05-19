@@ -491,18 +491,6 @@ steps:
             output/${{ needs.refs.outputs.version }}${{ matrix.variant != 'default' && '_' || '' }}${{ matrix.variant != 'default' && matrix.variant || '' }}/${{ matrix.platform }}_Tuya_UA_${{ needs.refs.outputs.version }}${{ matrix.variant != 'default' && '_' || '' }}${{ matrix.variant != 'default' && matrix.variant || '' }}.bin
           if-no-files-found: warn
 
-  build_ameba:
-    name: Build ameba
-    needs: refs
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - platform: OpenRTL8721DA
-            variant: default
-          - platform: OpenRTL8720E
-            variant: default
     steps:
       - name: Source checkout
         uses: actions/checkout@v4
@@ -545,20 +533,7 @@ steps:
             output/${{ needs.refs.outputs.version }}${{ matrix.variant != 'default' && '_' || '' }}${{ matrix.variant != 'default' && matrix.variant || '' }}/${{ matrix.platform }}_${{ needs.refs.outputs.version }}${{ matrix.variant != 'default' && '_' || '' }}${{ matrix.variant != 'default' && matrix.variant || '' }}_ota.img
           if-no-files-found: warn
 
-  build_txw81x:
-    name: Build TXW81X
-    needs: refs
-    runs-on: windows-latest
-    defaults:
-      run:
-        shell: wsl-bash {0}
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - platform: OpenTXW81X
-            variant: default
-    steps:
+      steps:
       - name: Source checkout
         uses: actions/checkout@v4
       - uses: Vampire/setup-wsl@v6
